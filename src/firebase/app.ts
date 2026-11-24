@@ -1,15 +1,13 @@
 import { initializeApp, type FirebaseOptions } from 'firebase/app';
 import { initializeAppCheck, ReCaptchaEnterpriseProvider, ReCaptchaV3Provider, type AppCheck } from 'firebase/app-check';
 
-const env = import.meta.env;
-
 const config: FirebaseOptions = {
-  apiKey: env.VITE_FIREBASE_API_KEY,
-  authDomain: env.VITE_FIREBASE_AUTH_DOMAIN,
-  projectId: env.VITE_FIREBASE_PROJECT_ID,
-  storageBucket: env.VITE_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-  appId: env.VITE_FIREBASE_APP_ID,
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
 };
 
 /** True when a real Firebase project is configured in .env.local. */
@@ -31,14 +29,18 @@ export type AppCheckState = 'recaptcha-enterprise' | 'recaptcha-v3' | 'debug' | 
 function setupAppCheck(): { appCheck: AppCheck | null; state: AppCheckState } {
   if (!firebaseConfigured) return { appCheck: null, state: 'missing' };
   if (isExtension) return { appCheck: null, state: 'unsupported' };
-  const enterpriseKey = env.VITE_RECAPTCHA_ENTERPRISE_SITE_KEY;
-  const v3Key = env.VITE_RECAPTCHA_V3_SITE_KEY;
+  const enterpriseKey = import.meta.env.VITE_RECAPTCHA_ENTERPRISE_SITE_KEY;
+  const v3Key = import.meta.env.VITE_RECAPTCHA_V3_SITE_KEY;
   let state: AppCheckState = enterpriseKey ? 'recaptcha-enterprise' : v3Key ? 'recaptcha-v3' : 'missing';
   // Debug provider: dev server only, token comes from .env.local (never committed).
-  if (env.DEV && env.VITE_APPCHECK_DEBUG_TOKEN) {
-    (self as unknown as { FIREBASE_APPCHECK_DEBUG_TOKEN: string | boolean }).FIREBASE_APPCHECK_DEBUG_TOKEN =
-      env.VITE_APPCHECK_DEBUG_TOKEN === 'true' ? true : env.VITE_APPCHECK_DEBUG_TOKEN;
-    state = 'debug';
+  // Written with literal `import.meta.env.DEV` so production builds drop this block (and the token) entirely.
+  if (import.meta.env.DEV) {
+    const debugToken = import.meta.env.VITE_APPCHECK_DEBUG_TOKEN;
+    if (debugToken) {
+      (self as unknown as { FIREBASE_APPCHECK_DEBUG_TOKEN: string | boolean }).FIREBASE_APPCHECK_DEBUG_TOKEN =
+        debugToken === 'true' ? true : debugToken;
+      state = 'debug';
+    }
   }
   if (state === 'missing') return { appCheck: null, state };
   const siteKey = enterpriseKey || v3Key || 'debug-only';
