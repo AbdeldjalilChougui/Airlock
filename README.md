@@ -6,7 +6,7 @@ Airlock is an incident-triage tool for developers who can't paste production log
 
 > Built for the **#BuildHybridAI** hackathon (Firebase AI Logic hybrid inference). Every line in this repo was written during the hackathon, starting 24 Nov 2026.
 
-- **Live demo:** `https://<your-project-id>.web.app` *(placeholder: see [OWNER_STEPS.md](OWNER_STEPS.md))*
+- **Live demo:** https://airlock-hybrid-ff7ef0.web.app
 - **Video:** *(link after recording)*
 - **Platforms:** Web app (Chrome desktop) and a Chrome extension (MV3 side panel) built from the same code
 

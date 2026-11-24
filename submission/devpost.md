@@ -10,7 +10,7 @@ Scrub logs on-device. Reason in the cloud. Restore locally.
 Web (Chrome desktop) · Chrome extension (MV3 side panel)
 
 ## Links
-- Live app: https://<project-id>.web.app
+- Live app: https://airlock-hybrid-ff7ef0.web.app
 - Code: https://github.com/AbdeldjalilChougui/Airlock
 - Video: <YouTube URL>
 

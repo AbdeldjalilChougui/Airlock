@@ -15,6 +15,9 @@ Hackathon entry (#BuildHybridAI, due 2026-11-30 14:00 PT): developer incident tr
 - Firebase JS SDK 13.4: AI Logic (hybrid), App Check, Auth, Firestore, Remote Config, Hosting
 - Chrome MV3 extension built from the same code (vite.ext.config.ts)
 
+## Live
+- Firebase project airlock-hybrid-ff7ef0, live at https://airlock-hybrid-ff7ef0.web.app (App Check reCAPTCHA Enterprise enforced)
+
 ## Map
 - [[architecture]]: how the parts fit together
 - [[decisions]]: why things were built this way
@@ -29,5 +32,4 @@ Hackathon entry (#BuildHybridAI, due 2026-11-30 14:00 PT): developer incident tr
 - [[extension]]: MV3 side panel + service worker (src/ext, ext/, extension/)
 
 ## To revisit
-- No Firebase project yet: account hit project quota (see OWNER_STEPS.md)
 - Live cloud + real Nano paths were verified only with mocks

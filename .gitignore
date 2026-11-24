@@ -9,3 +9,6 @@ firebase-debug.log*
 .firebase
 debug-token*.txt
 .DS_Store
+
+# Demo video renders (not committed)
+submission/video/
