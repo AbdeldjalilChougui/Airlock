@@ -36,6 +36,8 @@ export interface Finding {
   origin: Origin;
   /** Short human explanation, e.g. "AWS access key id (AKIA…)". */
   reason: string;
+  /** Spelling variants share one placeholder: case-insensitive user terms map to this canonical value. */
+  canonical?: string;
 }
 
 export interface RedactionItem {

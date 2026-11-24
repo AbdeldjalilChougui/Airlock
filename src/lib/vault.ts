@@ -24,7 +24,7 @@ export function buildItems(findings: Finding[], previous: RedactionItem[] = []):
   // Keep toggles the user already chose for values that are still present.
   const prevEnabled = new Map(previous.map((p) => [p.value, p.enabled]));
   for (const f of findings) {
-    const existing = byValue.get(f.value);
+    const existing = byValue.get(f.canonical ?? f.value);
     if (existing) {
       existing.count += 1;
       continue;
@@ -32,10 +32,10 @@ export function buildItems(findings: Finding[], previous: RedactionItem[] = []):
     const n = (counters.get(f.kind) ?? 0) + 1;
     counters.set(f.kind, n);
     const placeholder = makePlaceholder(f.kind, n);
-    byValue.set(f.value, {
+    byValue.set(f.canonical ?? f.value, {
       id: placeholder,
       placeholder,
-      value: f.value,
+      value: f.canonical ?? f.value,
       kind: f.kind,
       origin: f.origin,
       reason: f.reason,
@@ -56,9 +56,11 @@ export function addLiteralFindings(
   for (const e of extras) {
     const v = e.value.trim();
     if (v.length < 3 || v.includes(OPEN)) continue;
-    for (const hit of findLiteral(text, v)) {
+    const ignoreCase = e.origin === 'user';
+    for (const hit of findLiteral(text, v, ignoreCase)) {
       if (out.some((f) => hit.start < f.end && f.start < hit.end)) continue;
-      out.push({ ...hit, value: v, kind: e.kind, origin: e.origin, reason: e.reason });
+      const actual = text.slice(hit.start, hit.end);
+      out.push({ ...hit, value: actual, canonical: ignoreCase ? v : undefined, kind: e.kind, origin: e.origin, reason: e.reason });
     }
   }
   return out.sort((a, b) => a.start - b.start);
@@ -78,7 +80,7 @@ export function redact(text: string, findings: Finding[], items: RedactionItem[]
   let cursor = 0;
   for (const f of [...findings].sort((a, b) => a.start - b.start)) {
     if (f.start < cursor) continue;
-    const item = itemByValue.get(f.value);
+    const item = itemByValue.get(f.canonical ?? f.value);
     if (!item || !item.enabled) continue;
     out += text.slice(cursor, f.start) + item.placeholder;
     vault.set(item.placeholder, item.value);

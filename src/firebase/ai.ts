@@ -156,6 +156,13 @@ export async function infer<T>(
   const { model, mode } = MODELS[feature];
   const textOut = typeof input === 'string' ? input : input.filter((p): p is string => typeof p === 'string').join('\n');
   const mayLeaveDevice = mode !== InferenceMode.ONLY_ON_DEVICE;
+  if (!mayLeaveDevice && !lm()) {
+    // SDK quirk (firebase 13.4.0): when the browser has no `LanguageModel` global, the
+    // model is built without a Chrome adapter and ONLY_ON_DEVICE requests are sent to
+    // the CLOUD instead of throwing. Raw text must never take that path, so refuse here.
+    ledger.add({ feature, mode, source: 'failed', ms: 0, charsOut: 0, note: 'No on-device model — request kept local' });
+    throw new Error('On-device model not available in this browser');
+  }
   if (mayLeaveDevice && opts.vault) {
     const leaks = findLeaks(textOut, opts.vault);
     if (leaks.length) {

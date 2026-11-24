@@ -34,7 +34,7 @@ export function ReviewStage({ s }: { s: AirlockState }) {
     let cursor = 0;
     s.findings.forEach((f, idx) => {
       if (f.start < cursor) return;
-      const item = byValue.get(f.value);
+      const item = byValue.get(f.canonical ?? f.value);
       if (!item) return;
       out.push(s.input.slice(cursor, f.start));
       out.push(
@@ -67,6 +67,8 @@ export function ReviewStage({ s }: { s: AirlockState }) {
 
   const cloudBlocked = !s.cloudReady || !s.online;
   const canSend = s.leaks.length === 0 && s.busy === null;
+  const nanoReady = s.device === 'available' || s.device === 'downloadable' || s.device === 'downloading';
+  const triageBlocked = !nanoReady && cloudBlocked;
 
   return (
     <div className="review">
@@ -103,7 +105,7 @@ export function ReviewStage({ s }: { s: AirlockState }) {
                 </header>
                 <ul>
                   {list.map((i) => (
-                    <li key={i.id} className={i.enabled ? '' : 'is-off'}>
+                    <li key={i.id} className={`k-${groupOf(i)} ${i.enabled ? '' : 'is-off'}`}>
                       <label>
                         <input type="checkbox" checked={i.enabled} onChange={() => s.toggle(i.id)} />
                         <span className="ph mini">{i.placeholder}</span>
@@ -162,7 +164,7 @@ export function ReviewStage({ s }: { s: AirlockState }) {
           </span>
         </div>
         <div className="actions">
-          <button className="btn secondary" disabled={!canSend} onClick={s.runTriage} title="InferenceMode.PREFER_ON_DEVICE">
+          <button className="btn secondary" disabled={!canSend || triageBlocked} onClick={s.runTriage} title={triageBlocked ? 'Needs Gemini Nano or a configured cloud backend' : 'InferenceMode.PREFER_ON_DEVICE'}>
             {s.busy === 'triage' ? <Spinner /> : <Bolt size={16} />}
             Quick triage
             <span className="mode-hint">
@@ -186,7 +188,7 @@ export function ReviewStage({ s }: { s: AirlockState }) {
       {cloudBlocked && (
         <p className="hint-line">
           {s.online
-            ? 'Cloud analysis needs a Firebase project with AI Logic + App Check (see OWNER_STEPS.md). Quick triage still works on-device.'
+            ? `Cloud analysis needs a Firebase project with AI Logic + App Check (see OWNER_STEPS.md).${nanoReady ? ' Quick triage still works on-device.' : ' Enable Gemini Nano for on-device triage.'}`
             : 'You are offline. Quick triage runs on Gemini Nano; the cloud button comes back when you reconnect.'}
         </p>
       )}

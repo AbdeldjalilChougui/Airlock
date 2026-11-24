@@ -109,3 +109,13 @@ describe('maskPreview', () => {
     expect(maskPreview('supersecretvalue123')).not.toContain('secretvalue');
   });
 });
+
+describe('user terms', () => {
+  it('match case-insensitively and share one placeholder', () => {
+    const t = 'Project Bluefin: /srv/bluefin/.env and BLUEFIN api';
+    const all = addLiteralFindings(t, [], [{ value: 'Bluefin', kind: 'CUSTOM', origin: 'user', reason: '' }]);
+    const r = redact(t, all, buildItems(all));
+    expect(r.text).toBe('Project ⟦CUSTOM_1⟧: /srv/⟦CUSTOM_1⟧/.env and ⟦CUSTOM_1⟧ api');
+    expect(r.vault.get('⟦CUSTOM_1⟧')).toBe('Bluefin');
+  });
+});

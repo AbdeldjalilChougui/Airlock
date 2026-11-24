@@ -299,10 +299,12 @@ export function detect(text: string, policy: Policy = DEFAULT_POLICY): Finding[]
 }
 
 /** Find every literal occurrence of `value` (used for Nano and user-added terms). */
-export function findLiteral(text: string, value: string): { start: number; end: number }[] {
+export function findLiteral(text: string, value: string, ignoreCase = false): { start: number; end: number }[] {
   const hits: { start: number; end: number }[] = [];
   if (!value) return hits;
-  let i = text.indexOf(value);
+  const hay = ignoreCase ? text.toLowerCase() : text;
+  const needle = ignoreCase ? value.toLowerCase() : value;
+  let i = hay.indexOf(needle);
   while (i !== -1) {
     const before = text[i - 1];
     const after = text[i + value.length];
@@ -311,7 +313,7 @@ export function findLiteral(text: string, value: string): { start: number; end: 
     const okBefore = !(before && wordy.test(before) && wordy.test(value[0]));
     const okAfter = !(after && wordy.test(after) && wordy.test(value[value.length - 1]));
     if (okBefore && okAfter) hits.push({ start: i, end: i + value.length });
-    i = text.indexOf(value, i + value.length);
+    i = hay.indexOf(needle, i + value.length);
   }
   return hits;
 }
