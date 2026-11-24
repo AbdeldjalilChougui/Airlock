@@ -46,7 +46,7 @@ services:
   api:
     environment:
       DATABASE_URL: mysql://root:hunter2-prod@db.acme-internal.corp:3306/orders
-      SENTRY_DSN: https://${j('3f9c2a', '7be4d1', '48a0b5c6d7e8f9a0b1')}@o4504.ingest.sentry.io/77
+      SENTRY_DSN: https://${j('3f9c2a', '7be4d1', '48a0b5c6d7e8f9a0b1c2')}@o4504.ingest.sentry.io/77
       ADMIN_EMAIL: dev.patel@acme-retail.io
       TENANT_ID: acme-eu-prod-0042
     extra_hosts:

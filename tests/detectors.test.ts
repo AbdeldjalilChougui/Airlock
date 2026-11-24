@@ -155,7 +155,7 @@ describe('sample logs', () => {
 
 describe('sentry dsn', () => {
   it('treats the DSN key as a secret, not an email', () => {
-    const k = j('3f9c2a', '7be4d1', '48a0b5c6d7e8f9a0b1');
+    const k = j('3f9c2a', '7be4d1', '48a0b5c6d7e8f9a0b1c2');
     expect(kinds(`SENTRY_DSN: https://${k}@o4504.ingest.sentry.io/77`)).toContain(`SECRET:${k}`);
   });
 });
