@@ -1,0 +1,13 @@
+{
+  "parameters": {
+    "policy_secrets": { "defaultValue": { "value": "true" }, "valueType": "BOOLEAN", "description": "Redact API keys, tokens, private keys, passwords" },
+    "policy_contact": { "defaultValue": { "value": "true" }, "valueType": "BOOLEAN", "description": "Redact emails and phone numbers" },
+    "policy_network": { "defaultValue": { "value": "true" }, "valueType": "BOOLEAN", "description": "Redact IPs and non-public hostnames" },
+    "policy_identifiers": { "defaultValue": { "value": "true" }, "valueType": "BOOLEAN", "description": "Redact customer/user/account IDs" },
+    "policy_financial": { "defaultValue": { "value": "true" }, "valueType": "BOOLEAN", "description": "Redact Luhn-valid card numbers" },
+    "policy_entropy": { "defaultValue": { "value": "true" }, "valueType": "BOOLEAN", "description": "Redact high-entropy strings" },
+    "policy_nano_entities": { "defaultValue": { "value": "true" }, "valueType": "BOOLEAN", "description": "Run the Gemini Nano context scan (names, customers, codenames)" },
+    "entropy_threshold": { "defaultValue": { "value": "4.0" }, "valueType": "NUMBER", "description": "Shannon entropy bits/char for the generic secret detector (3-6)" },
+    "allow_domains": { "defaultValue": { "value": "" }, "valueType": "STRING", "description": "Comma-separated public domains never to redact" }
+  }
+}

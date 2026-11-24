@@ -1,0 +1,26 @@
+rules_version = '2';
+// Airlock stores ONLY redacted incidents. The placeholder->value vault never leaves
+// the browser tab, and these rules reject any document shaped like it might carry one.
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /users/{uid}/incidents/{incidentId} {
+      allow read, delete: if request.auth != null && request.auth.uid == uid;
+      allow create: if request.auth != null
+        && request.auth.uid == uid
+        && request.resource.data.keys().hasOnly(
+             ['title', 'redactedText', 'analysis', 'source', 'severity', 'hiddenCount', 'kinds', 'createdAt'])
+        && request.resource.data.title is string && request.resource.data.title.size() <= 200
+        && request.resource.data.redactedText is string && request.resource.data.redactedText.size() <= 200000
+        && request.resource.data.analysis is map
+        && request.resource.data.source in ['on_device', 'in_cloud']
+        && request.resource.data.severity in ['critical', 'high', 'medium', 'low']
+        && request.resource.data.hiddenCount is int
+        && request.resource.data.kinds is list
+        && request.resource.data.createdAt == request.time;
+      allow update: if false;
+    }
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

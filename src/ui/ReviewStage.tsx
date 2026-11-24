@@ -4,7 +4,8 @@ import type { Group, Kind, RedactionItem } from '../lib/types';
 import { maskPreview } from '../lib/vault';
 import type { AirlockState } from '../useAirlock';
 import { Spinner, Switch } from './bits';
-import { Alert, Back, Bolt, Check, Chip, Cloud, Eye, Plus, Shield } from './icons';
+import { Alert, Back, Bolt, Check, Chip, Cloud, Copy, Eye, Plus, Shield } from './icons';
+import { isExtension } from '../firebase/app';
 
 const ORIGIN_LABEL = { rule: 'Rule', entropy: 'Entropy', nano: 'Nano', user: 'You' } as const;
 const GROUP_ORDER: Group[] = ['secrets', 'entropy', 'contact', 'network', 'identifiers', 'financial', 'context'];
@@ -17,6 +18,12 @@ export function ReviewStage({ s }: { s: AirlockState }) {
   const [view, setView] = useState<'diff' | 'payload'>('diff');
   const [term, setTerm] = useState('');
   const [reveal, setReveal] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const copyScrubbed = async () => {
+    await navigator.clipboard.writeText(s.redaction.text);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1600);
+  };
   const enabled = s.items.filter((i) => i.enabled);
   const byValue = useMemo(() => new Map(s.items.map((i) => [i.value, i])), [s.items]);
 
@@ -171,21 +178,28 @@ export function ReviewStage({ s }: { s: AirlockState }) {
               <Chip size={12} /> on-device
             </span>
           </button>
-          <button
-            className="btn primary"
-            disabled={!canSend || cloudBlocked}
-            onClick={s.analyze}
-            title={cloudBlocked ? (s.online ? 'Firebase AI Logic / App Check not configured' : 'Offline — use Quick triage') : 'InferenceMode.PREFER_IN_CLOUD'}
-          >
-            {s.busy === 'analyze' ? <Spinner /> : <Cloud size={16} />}
-            Analyze in cloud
-            <span className="mode-hint">
-              <Check size={12} /> scrubbed only
-            </span>
-          </button>
+          {isExtension ? (
+            <button className="btn primary" disabled={!canSend} onClick={copyScrubbed} title="Copy the placeholder version to paste into any AI tool">
+              {copied ? <Check size={16} /> : <Copy size={16} />}
+              {copied ? 'Copied' : 'Copy scrubbed text'}
+            </button>
+          ) : (
+            <button
+              className="btn primary"
+              disabled={!canSend || cloudBlocked}
+              onClick={s.analyze}
+              title={cloudBlocked ? (s.online ? 'Firebase AI Logic / App Check not configured' : 'Offline — use Quick triage') : 'InferenceMode.PREFER_IN_CLOUD'}
+            >
+              {s.busy === 'analyze' ? <Spinner /> : <Cloud size={16} />}
+              Analyze in cloud
+              <span className="mode-hint">
+                <Check size={12} /> scrubbed only
+              </span>
+            </button>
+          )}
         </div>
       </div>
-      {cloudBlocked && (
+      {cloudBlocked && !isExtension && (
         <p className="hint-line">
           {s.online
             ? `Cloud analysis needs a Firebase project with AI Logic + App Check (see OWNER_STEPS.md).${nanoReady ? ' Quick triage still works on-device.' : ' Enable Gemini Nano for on-device triage.'}`

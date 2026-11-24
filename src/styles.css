@@ -1604,3 +1604,26 @@ button.pill:hover {
 .is-ext .analysis-grid {
   grid-template-columns: 1fr;
 }
+.is-ext .actionbar {
+  position: static;
+}
+.is-ext .diff {
+  min-height: 160px;
+  max-height: 50vh;
+}
+.is-ext .diff-card,
+.is-ext .actions {
+  order: -1;
+}
+.is-ext .actions {
+  width: 100%;
+  margin-left: 0;
+}
+.is-ext .actions .btn {
+  flex: 1;
+}
+@media (max-width: 1080px) {
+  .diff-card {
+    order: -1;
+  }
+}

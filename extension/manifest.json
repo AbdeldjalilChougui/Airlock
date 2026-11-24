@@ -1,0 +1,13 @@
+{
+  "manifest_version": 3,
+  "name": "Airlock — scrub logs before AI",
+  "short_name": "Airlock",
+  "version": "1.0.0",
+  "description": "Scrub secrets and PII from logs on-device with Gemini Nano (Firebase AI Logic) before asking AI for help.",
+  "minimum_chrome_version": "139",
+  "icons": { "16": "icon16.png", "48": "icon48.png", "128": "icon128.png" },
+  "action": { "default_title": "Open Airlock" },
+  "side_panel": { "default_path": "ext/sidepanel.html" },
+  "background": { "service_worker": "background.js", "type": "module" },
+  "permissions": ["sidePanel", "contextMenus", "storage", "scripting", "activeTab", "clipboardRead"]
+}
