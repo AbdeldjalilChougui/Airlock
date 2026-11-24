@@ -1,0 +1,11 @@
+node_modules
+dist
+dist-ext
+.env
+.env.local
+.env.*.local
+*.log
+firebase-debug.log*
+.firebase
+debug-token*.txt
+.DS_Store
