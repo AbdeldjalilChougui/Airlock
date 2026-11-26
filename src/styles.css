@@ -970,6 +970,8 @@ button.pill:hover {
   font-size: 11.5px;
 }
 .restored {
+  overflow-wrap: anywhere;
+  word-break: break-word;
   background: var(--green-soft);
   color: var(--green);
   border-radius: 4px;
@@ -1143,6 +1145,9 @@ button.pill:hover {
   display: block;
   height: 100%;
   background: var(--cloud);
+}
+.analysis-grid > * {
+  min-width: 0;
 }
 .analysis-grid {
   display: grid;
