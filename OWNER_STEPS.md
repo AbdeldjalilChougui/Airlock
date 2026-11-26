@@ -88,7 +88,7 @@ Follow `submission/video-script.md`. You need:
 - The live URL with App Check enforced.
 - DevTools → Network panel visible for the network-off shot (or turn off Wi-Fi).
 
-Then retake `submission/screenshots/11-…` to `15-…` against the live project. The current ones come from the mocked run.
+Screenshots `11-…` to `15-…` were retaken from the live project (no Gemini Nano on the capture machine). Record the on-device clip in a Chrome with Nano for the video slot.
 
 Upload to YouTube (public or unlisted).
 
